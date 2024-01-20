@@ -250,17 +250,16 @@ fun unpatchBootimg(logs: MutableList<String>): Boolean {
     val patchDir: ExtendedFile = FileSystemManager.getLocal().getFile(apApp.filesDir.parent, "patch")
     val backupDir: ExtendedFile = FileSystemManager.getLocal().getFile(apApp.filesDir.parent, "backup")
     val origBoot = backupDir.getChildFile("boot.img")
+    patchDir.mkdirs()
+
+    // Extract scripts
+    for (script in listOf("boot_unpatch.sh", "util_functions.sh")) {
+        val dest = File(patchDir, script)
+        apApp.assets.open(script).writeTo(dest)
+    }
 
     var succ = true
-    if (patchDir.exists() && origBoot.exists()) {
-        // Ensure migration scenario
-        val script = "boot_unpatch.sh"
-        val tmp = patchDir.getChildFile(script)
-        if (!tmp.exists()) {
-            val dest = File(patchDir, script)
-            apApp.assets.open(script).writeTo(dest)
-        }
-
+    if (backupDir.exists() && origBoot.exists()) {
         val cmds = arrayOf(
             "cd $patchDir",
             "sh boot_unpatch.sh",
