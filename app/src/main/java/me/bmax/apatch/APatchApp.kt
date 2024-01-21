@@ -83,11 +83,18 @@ class APApplication : Application() {
             if (_kpStateLiveData.value != State.KERNELPATCH_INSTALLED) return
             _kpStateLiveData.value = State.KERNELPATCH_UNINSTALLING
 
-            // Trigger APatch uninstallation as it won't work without KPatch anyway
-            uninstallApatch()
+            val backupDir: ExtendedFile = FileSystemManager.getLocal().getFile(apApp.filesDir.parent, "backup")
+            val newBootFile = backupDir.getChildFile("new-boot.img")
 
-            Log.d(TAG, "KPatch uninstalled ...")
-            _kpStateLiveData.postValue(State.UNKNOWN_STATE)
+            if (newBootFile.exists()) {
+                // Trigger APatch uninstallation as it won't work without KPatch anyway
+                uninstallApatch()
+
+                Log.d(TAG, "KPatch uninstalled ...")
+                _kpStateLiveData.postValue(State.UNKNOWN_STATE)
+            } else {
+                _kpStateLiveData.value = State.KERNELPATCH_INSTALLED
+            }
         }
 
         fun installKpatch() {

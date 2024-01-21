@@ -248,9 +248,12 @@ fun patchBootimg(uri: Uri?, superKey: String, logs: MutableList<String>): Boolea
 
 fun unpatchBootimg(logs: MutableList<String>): Boolean {
     val patchDir: ExtendedFile = FileSystemManager.getLocal().getFile(apApp.filesDir.parent, "patch")
+    patchDir.mkdirs()
+
     val backupDir: ExtendedFile = FileSystemManager.getLocal().getFile(apApp.filesDir.parent, "backup")
     val origBoot = backupDir.getChildFile("boot.img")
-    patchDir.mkdirs()
+    val newBoot = backupDir.getChildFile("new-boot.img")
+    newBoot.delete()
 
     // Extract scripts
     for (script in listOf("boot_unpatch.sh", "util_functions.sh")) {

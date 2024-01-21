@@ -29,6 +29,9 @@ BOOTIMAGE=$1
 BACKUPDIR="../backup"
 BACKUPIMAGE="$BACKUPDIR/boot.img"
 
+# Remove any previous successful unpatch signal
+rm -f "$BACKUPDIR/new-boot.img"
+
 if [ -z "$BOOTIMAGE" ]; then
   if [ ! -f "$BACKUPIMAGE" ]; then
     echo "Boot unpatch is not possible!"
@@ -48,6 +51,9 @@ if [ $? -ne 0 ]; then
   echo "Flash error: $?"
   exit $?
 fi
+
+# This is just to signal a successful unpatch
+cp "$BACKUPIMAGE" "$BACKUPDIR/new-boot.img"
 
 # Reset any error code
 true

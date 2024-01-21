@@ -136,7 +136,6 @@ fi
 
 echo "- Cleaning up"
 ./magiskboot cleanup >/dev/null 2>&1
-rm -f kernel.ori
 
 if [ "$ISDIRECTINSTALL" ] && [ -f "new-boot.img" ]; then
   echo "- Flashing patched boot image"
