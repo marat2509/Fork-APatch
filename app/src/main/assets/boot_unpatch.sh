@@ -29,6 +29,9 @@ BOOTIMAGE=$1
 BACKUPDIR="../backup"
 BACKUPIMAGE="$BACKUPDIR/boot.img"
 
+mount_partitions
+find_boot_image
+
 # Remove any previous successful unpatch signal
 rm -f "$BACKUPDIR/new-boot.img"
 
@@ -37,7 +40,6 @@ if [ -z "$BOOTIMAGE" ]; then
     echo "Boot unpatch is not possible!"
     exit 1
   fi
-  find_boot_image
 fi
 
 [ -e "$BOOTIMAGE" ] || { echo "$BOOTIMAGE does not exist!"; exit 1; }
