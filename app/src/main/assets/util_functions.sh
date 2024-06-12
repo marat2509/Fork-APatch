@@ -238,6 +238,8 @@ get_next_slot() {
 }
 
 find_boot_image() {
+  local FSTAB_PATHS="/etc/*fstab* /system/etc/*fstab* /vendor/etc/fstab*"
+  local FSTAB_PATH
   if [ ! -z $SLOT ]; then
     BOOTIMAGE=$(find_block "boot$SLOT")
   fi
@@ -245,8 +247,15 @@ find_boot_image() {
     BOOTIMAGE=$(find_block kern-a android_boot kernel bootimg boot lnx boot_a)
   fi
   if [ -z $BOOTIMAGE ]; then
+    for i in $FSTABS; do
+      if `ls $i > /dev/null 2>&1`; then
+        FSTAB_PATH=$i
+        break
+      fi
+    done
+    [ -z $FSTAB_PATH ] && { >&2 echo "can't find fstab file for find boot path"; exit 1; }
     # Lets see what fstabs tells me
-    BOOTIMAGE=$(grep -v '#' /etc/*fstab* | grep -E '/boot(img)?[^a-zA-Z]' | grep -oE '/dev/[a-zA-Z0-9_./-]*' | head -n 1)
+    BOOTIMAGE=$(grep -v '#' $FSTAB_PATH | grep -E '/boot(img)?[^a-zA-Z]' | grep -oE '/dev/[a-zA-Z0-9_./-]*' | head -n 1)
   fi
   [ -z $BOOTIMAGE ] || echo "BOOTIMAGE=$BOOTIMAGE"
 }
