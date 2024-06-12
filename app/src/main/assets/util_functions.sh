@@ -247,7 +247,7 @@ find_boot_image() {
     BOOTIMAGE=$(find_block kern-a android_boot kernel bootimg boot lnx boot_a)
   fi
   if [ -z $BOOTIMAGE ]; then
-    for i in $FSTABS; do
+    for i in $FSTAB_PATHS; do
       if `ls $i > /dev/null 2>&1`; then
         FSTAB_PATH=$i
         break
