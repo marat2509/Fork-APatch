@@ -94,7 +94,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Upload build artifact
+      - name: Upload signed release
         env: 
            SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
         if: ${{ env.SIGNING_KEY != '' }}
@@ -102,6 +102,15 @@ jobs:
         with:
           name: APatch
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
+      - name: Upload unsigned release
+        env: 
+           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        if: ${{ env.SIGNING_KEY == '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: APatch-unsigned
+          path: app/build/outputs/apk/release
+    
       - name: Post to channel
         if: ${{github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.ref_type != 'tag'}}
         env:
