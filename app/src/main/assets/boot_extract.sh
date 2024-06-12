@@ -8,7 +8,7 @@ IS_INSTALL_NEXT_SLOT=$1
 . ./util_functions.sh
 
 # shellcheck disable=SC2039
-if [[ $IS_INSTALL_NEXT_SLOT == *"true"* ]]; then
+if [[ $IS_INSTALL_NEXT_SLOT == *true* ]]; then
   get_next_slot
 else
   get_current_slot
